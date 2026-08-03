@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
+    <title>Leftlet 地圖 API 的使用</title>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        const divMap = document.querySelector("#map");
+        // L 從上面的leaflet.js取得
+        // .map() 把地圖的 div 元素傳入
+        // .setView() 設定地圖的起始位置
+        //     第一個參數, 座標陣列
+        //     第二個參數, 縮放比
+        const map = L.map(divMap).setView([24.9846952, 121.2219072], 13);
+        // .tileLayer() 追定地圖圖資的拼圖
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // .marker() 水滴狀 icon, 需要傳入座標陣列
+        // 最後一定要記得 .addTo() 加到地圖物件中
+        const marker = L.marker([24.9846952, 121.2219072]).addTo(map);
+        // .bindPopup() 負責寫入資料到地圖上
+        // .openPopup() 加上這句才是打開對話框
+        marker.bindPopup("<b>聖德基督學院</b><br>資展科技在這裡").openPopup();
+    </script>
+</body>
+
+</html>
