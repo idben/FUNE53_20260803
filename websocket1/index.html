@@ -10,7 +10,7 @@
 <body>
     <h1>websocket server 測試</h1>
     <input type="text" name="input-chat" placeholder="請在這裡輸入訊息...">
-    <button class="btn-send">送出訊息</button>
+    <button class="btn-send" disabled>送出訊息</button>
     <div id="chatbox"></div>
 
     <script>
@@ -23,6 +23,11 @@
             const msg = inputChat.value;
             ws.send(msg);
             inputChat.value = "";
+        });
+
+        ws.addEventListener("open", () => {
+            console.log("與 server 連線接通");
+            btnSend.disabled = false;
         });
 
         ws.addEventListener("message", async (event) => {
