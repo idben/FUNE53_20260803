@@ -9,9 +9,19 @@
 
 <body>
     <h1>websocket server 測試</h1>
+    <input type="text" name="input-chat" placeholder="請在這裡輸入訊息...">
+    <button class="btn-send">送出訊息</button>
 
     <script>
-        const ws = new WebSocket("ws://localhost:8080")
+        const ws = new WebSocket("ws://localhost:8080");
+        const btnSend = document.querySelector(".btn-send");
+        const inputChat = document.querySelector("[name=input-chat]");
+
+        btnSend.addEventListener("click", () => {
+            const msg = inputChat.value;
+            ws.send(msg);
+            inputChat.value = "";
+        });
     </script>
 </body>
 
