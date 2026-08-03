@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
+    <title>Leftlet 地圖 API 的使用</title>
+</head>
+
+<body>
+    <h1>在地圖上標記多個點</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        const divMap = document.querySelector("#map");
+        const locations = [
+            { lat: 25.057191, lon: 121.507961, name: '大稻埕碼頭廣場' },
+            { lat: 25.057169, lon: 121.507955, name: '大稻埕碼頭廣場' },
+            { lat: 25.057146, lon: 121.507954, name: '大稻埕碼頭廣場' },
+            { lat: 25.055755, lon: 121.507636, name: '自行車租借站旁' },
+            { lat: 25.055755, lon: 121.507608, name: '自行車租借站旁' }
+        ];
+
+        const map = L.map(divMap).setView([locations[0].lat, locations[0].lon], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        locations.forEach(location => {
+            L.marker([location.lat, location.lon]).addTo(map).bindPopup(location.name).openPopup();
+        });
+
+        loadCSV();
+
+        async function loadCSV() {
+            const url = "./河濱公園景觀廁所位置.csv";
+            const res = await fetch(url);
+            // if (!res.ok) throw new Error("讀取 csv 失敗")
+            let result = await res.text();
+            result = result.trim().split("\n").slice(1);
+            console.log(result);
+            const locations = result.map(line => {
+                cols = line.split(",")
+                return {
+                    lat: dmsToDecimal(cols[4]),
+                    lon: dmsToDecimal(cols[3]),
+                    name: `${cols[1]} - ${cols[0]}`
+                }
+            });
+            console.log(locations);
+
+        }
+
+        function dmsToDecimal(dms) {
+            if (!dms) return null
+
+            const parts = dms
+                .replace(/[°'"]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .split(' ')
+
+            if (parts.length < 3) return null
+
+            const [deg, min, sec, dir = ''] = parts
+            if ([deg, min, sec].some(v => Number.isNaN(Number(v)))) return null
+
+            const decimal = Number(deg) + Number(min) / 60 + Number(sec) / 3600
+            const signed = /[SW]/i.test(dir) ? -decimal : decimal
+
+            return Number(signed.toFixed(6))
+        }
+    </script>
+</body>
+
+</html>
