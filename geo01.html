@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation API 範例</title>
+</head>
+
+<body>
+    <h1>Geolocation API 範例</h1>
+    <button id="getLocation">取得位置</button>
+    <p id="output"></p>
+
+    <script>
+        const getLocation = document.querySelector("#getLocation");
+        const output = document.querySelector("#output");
+
+        getLocation.addEventListener("click", () => {
+            // 看看是否支援 API
+            if (!navigator.geolocation) {
+                output.innerHTML = "瀏覽器不支援";
+                return;
+            }
+
+            // 支援的內容在下面
+            output.innerHTML = "正在取得座標...";
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // 成功
+                    output.innerHTML = "取得座標...成功";
+                    // const latitude = position.coords.latitude; // 緯度
+                    // const longitude = position.coords.longitude; // 經度
+                    // const accuracy = position.coords.accuracy; // 準確度
+                    const { latitude, longitude, accuracy } = position.coords; // 物件解包
+                    output.innerHTML = `你的位置是：<br>
+                    緯度: ${latitude}<br>
+                    經度: ${longitude}<br>
+                    準確度: ${accuracy}`
+                },
+                (error) => {
+                    // 失敗
+                    output.innerHTML = "取得座標...失敗";
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            output.innerHTML = "取得座標...拒絕提供權限";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            output.innerHTML = "取得座標...無法取得位置資訊";
+                            break;
+                        case error.TIMEOUT:
+                            output.innerHTML = "取得座標...取得位置資訊逾時";
+                            break;
+                        default:
+                            output.innerHTML = "取得座標...失敗";
+                    }
+                }
+            );
+        });
+    </script>
+</body>
+
+</html>
