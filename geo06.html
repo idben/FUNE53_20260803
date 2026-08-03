@@ -34,9 +34,7 @@
         const map = L.map(divMap).setView([locations[0].lat, locations[0].lon], 13);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        locations.forEach(location => {
-            L.marker([location.lat, location.lon]).addTo(map).bindPopup(location.name).openPopup();
-        });
+
 
         loadCSV();
 
@@ -56,7 +54,9 @@
                 }
             });
             console.log(locations);
-
+            locations.forEach(location => {
+                L.marker([location.lat, location.lon]).addTo(map).bindPopup(location.name).openPopup();
+            });
         }
 
         function dmsToDecimal(dms) {
