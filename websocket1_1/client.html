@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Notification 系統通知範例</title>
+</head>
+
+<body>
+    <div class="container py-5" style="max-width: 600px;">
+        <h1 class="mb-4">Notification API 範例</h1>
+
+        <div class="mb-4">
+            <p>目前通知權限狀態：<span id="permissionStatus" class="badge bg-secondary"></span></p>
+        </div>
+
+        <div id="messageArea"></div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script>
+        const ws = new WebSocket("ws://localhost:8080");
+        const permissionStatus = document.querySelector("#permissionStatus");
+        // const btnRequestPermission = document.querySelector("#btnRequestPermission");
+        // const btnSendNotification = document.querySelector("#btnSendNotification");
+        const messageArea = document.querySelector("#messageArea");
+
+        // btnRequestPermission.addEventListener("click", () => {
+        //     Notification.requestPermission().then((result) => {
+        //         console.log(result);
+        //         updatePermissionStatus();
+        //         if (result == "granted") {
+        //             showMsg("已取得通知權限", "success");
+        //         } else if (result == "denied") {
+        //             showMsg("通知權限被拒絕", "danger");
+        //         }
+        //     });
+        // });
+
+        // btnSendNotification.addEventListener("click", () => {
+        //     // 還沒有取得權限或者沒有權限(!=granted)
+        //     if (Notification.permission != "granted") {
+        //         showMsg("還沒有取得權限或者沒有權限", "warning")
+        //         return;
+        //     }
+
+        //     // 有權限, 發通知
+        //     new Notification("Hello! 👋", {
+        //         body: "這是一則來自 Notification API 的通知",
+        //         icon: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/bell.svg"
+        //     });
+
+        //     showMsg("通知已發送！", "success")
+        // });
+
+        updatePermissionStatus();
+
+        ws.addEventListener("open", () => {
+            console.log("與 server 連線接通");
+        });
+
+        ws.addEventListener("message", async (event) => {
+            const msg = await event.data.text();
+            sendNotification(msg);
+        });
+
+        function updatePermissionStatus() {
+            const status = Notification.permission; // 取得通知權限
+            permissionStatus.textContent = status
+
+            if (status == "denied") {
+                permissionStatus.className = "badge bg-danger";
+            } else if (status == "granted") {
+                permissionStatus.className = "badge bg-success";
+            } else {
+                // default
+                permissionStatus.className = "badge bg-secondary";
+            }
+        }
+
+        function showMsg(text, type = "info") {
+            messageArea.innerHTML = `<div class="alert alert-${type}" role="alert">
+            ${text}
+            </div>`;
+
+            setTimeout(() => {
+                messageArea.innerHTML = "";
+            }, 3000);
+        }
+
+        function sendNotification(message) {
+            // 還沒有取得權限或者沒有權限(!=granted)
+            if (Notification.permission != "granted") {
+                showMsg("還沒有取得權限或者沒有權限", "warning")
+                return;
+            }
+
+            // 有權限, 發通知
+            new Notification(message, {
+                body: "這是一則來自 Notification API 的通知",
+                icon: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/bell.svg"
+            });
+
+            showMsg("通知已發送！", "success")
+        }
+    </script>
+</body>
+
+</html>

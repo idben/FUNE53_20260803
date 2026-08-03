@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>websocket server 測試</title>
+</head>
+
+<body>
+    <h1>送出 notication 的管理介面</h1>
+    <input type="text" name="input-chat" placeholder="請在這裡輸入訊息...">
+    <button class="btn-send" disabled>送出訊息</button>
+    <div id="chatbox"></div>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8080");
+        const btnSend = document.querySelector(".btn-send");
+        const inputChat = document.querySelector("[name=input-chat]");
+        const chatbox = document.querySelector("#chatbox");
+
+        btnSend.addEventListener("click", () => {
+            const msg = inputChat.value;
+            ws.send(msg);
+            inputChat.value = "";
+        });
+
+        ws.addEventListener("open", () => {
+            console.log("與 server 連線接通");
+            btnSend.disabled = false;
+        });
+
+        ws.addEventListener("message", async (event) => {
+            const msg = await event.data.text();
+            chatbox.innerHTML += `<div>${msg}</div>`;
+        });
+    </script>
+</body>
+
+</html>
