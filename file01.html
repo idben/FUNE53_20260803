@@ -33,6 +33,7 @@
         myFiles.addEventListener("change", e => {
             console.log(e.target.files);
             const filelist = e.target.files;
+            container.innerHTML = "";
             [...filelist].forEach(file => {
                 container.innerHTML += `<div>${file.name}</div>`
             });
