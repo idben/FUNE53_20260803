@@ -6,6 +6,9 @@ const wss = new WebSocketServer({ port: 8080 });
 wss.on("connection", (connection) => {
     console.log("新的使用者已連線了哦~~");
 
+    connection.on("message", (message) => {
+        console.log(`收到訊息: ${message}`);
+    });
 
     connection.on("close", () => {
         console.log("使用者已斷開連線");
