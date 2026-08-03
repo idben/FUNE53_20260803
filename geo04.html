@@ -60,16 +60,17 @@
                     // 失敗
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
-                            output.innerHTML = "取得座標...拒絕提供權限";
+
+                            console.log("取得座標...拒絕提供權限");
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            output.innerHTML = "取得座標...無法取得位置資訊";
+                            console.log("取得座標...無法取得位置資訊");
                             break;
                         case error.TIMEOUT:
-                            output.innerHTML = "取得座標...取得位置資訊逾時";
+                            console.log("取得座標...取得位置資訊逾時");
                             break;
                         default:
-                            output.innerHTML = "取得座標...失敗";
+                            console.log("取得座標...失敗");
                     }
                 }
             );
